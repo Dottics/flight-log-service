@@ -1,5 +1,5 @@
 import { error } from './error'
-import { buildRes, buildReq, buildNext } from 'test/test-utils'
+import { buildRes, buildReq, buildNext } from 'test-utils'
 
 describe('error handler', () => {
     const req= buildReq()
