@@ -1,0 +1,11 @@
+# IDE
+.idea
+.fleet
+
+# OS
+.DS_Store
+
+# Code
+node_modules
+dist
+
