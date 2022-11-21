@@ -1,9 +1,13 @@
 import express, { Express } from 'express'
 import bodyParser from 'body-parser'
+import * as dotenv from 'dotenv'
 
 import { home } from './handler/home'
 import { error } from './handler/error'
 import { permissionRequired } from './utils/permission-required'
+
+// load the .env file
+dotenv.config()
 
 const app: Express = express()
 const PORT = 3000
