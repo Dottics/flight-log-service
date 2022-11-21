@@ -2,9 +2,9 @@ import express, { Express } from 'express'
 import bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 
-import { home } from './handler/home'
-import { error } from './handler/error'
-import { permissionRequired } from './utils/permission-required'
+import { home } from 'handler/home'
+import { error } from 'handler/error'
+import { permissionRequired } from 'utils/permission-required'
 
 // load the .env file
 dotenv.config()
