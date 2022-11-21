@@ -1,6 +1,10 @@
 import { error } from './error'
 import { buildRes, buildReq, buildNext } from 'test-utils'
 
+beforeAll(() => {
+    jest.clearAllMocks()
+})
+
 describe('error handler', () => {
     const req= buildReq()
     const res = buildRes()

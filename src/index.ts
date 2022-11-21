@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 
 import { home } from './handler/home'
 import { error } from './handler/error'
-import { permissionRequired } from './utils/permissionRequired'
+import { permissionRequired } from './utils/permission-required'
 
 const app: Express = express()
 const PORT = 3000
