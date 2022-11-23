@@ -1,7 +1,13 @@
 import { pool } from '../database/db'
 import { loadEnv, testResolve, rePopulateDB } from 'test-utils'
 import { mockFlightLog } from 'generate'
-import { FlightLog, selectFlightLog, createFlightLog, updateFlightLog } from './flight-log'
+import {
+    FlightLog,
+    selectFlightLog,
+    createFlightLog,
+    updateFlightLog,
+    deleteFlightLog
+} from './flight-log'
 
 beforeAll(async () => {
     loadEnv()
@@ -25,12 +31,15 @@ describe('FlightLog', () => {
 
 describe('selectFlightLog', () => {
     it('should return an empty array if the user has no flight logs', async () => {
-        const logs = await selectFlightLog('baf46eac-7a11-4870-b0ec-c699cf794c41')
+        const randomUserUUID = 'baf46eac-7a11-4870-b0ec-c699cf794c41'
+        const logs = await selectFlightLog(randomUserUUID)
         expect(logs).toHaveLength(0)
     })
 
     it('should return an empty array if the specific flight log does not exist', async () => {
-        const logs = await selectFlightLog('1ca0ae68-1bf2-4a18-a819-be5aa80ed98e', '5a0de280-b365-4875-8101-1e235aa21eae')
+        const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
+        const randomFlightLogUUID = '5a0de280-b365-4875-8101-1e235aa21eae'
+        const logs = await selectFlightLog(userUUID, randomFlightLogUUID)
         expect(logs).toHaveLength(0)
     })
 
@@ -136,5 +145,19 @@ describe('updateFlightLog', () => {
 })
 
 describe('deleteFlightLog', () => {
-    it.skip('TBI', () => {})
+    it('should delete a flight log from the database', async () => {
+        const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
+        const UUID = '566b8e0d-da2e-4524-80db-573ac9dcd9b7'
+        let logs = await selectFlightLog(userUUID, UUID)
+        expect(logs).toHaveLength(1)
+
+        let log = await deleteFlightLog(userUUID, UUID)
+        expect(log).toMatchObject({
+            userUUID: userUUID,
+            UUID: UUID,
+        })
+
+        logs = await selectFlightLog(userUUID, UUID)
+        expect(logs).toHaveLength(0)
+    })
 })

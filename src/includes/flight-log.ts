@@ -200,7 +200,7 @@ const updateFlightLog = async (data: FlightLog) => {
 const deleteFlightLog = async (userUUID: string, UUID: string) => {
     try {
         const { rows } = await query(
-            'DELETE FROM tb_log WHERE user_uuid = $1 AND id = $2 RETURNING *',
+            'DELETE FROM tb_log WHERE user_uuid = $1 AND uuid = $2 RETURNING *',
             [userUUID, UUID]
         )
         return map.dbToFlightLog(rows[0])
