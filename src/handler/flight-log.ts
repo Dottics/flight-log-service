@@ -1,11 +1,14 @@
 import { Request, Response } from 'express'
+import { selectFlightLog } from '../includes/flight-log'
 
 /**
 * getFlightLogs aggregates all the user's flight logs and sends all of them to
 * the user.
 */
-const getFlightLogs = (req: Request, res: Response) => {
+const getFlightLogs = async (req: Request, res: Response) => {
     const { userUUID } = req.query
+
+    // TODO: add UUID validation
 
     if (userUUID === undefined) {
         res.status(400).json({
@@ -14,7 +17,28 @@ const getFlightLogs = (req: Request, res: Response) => {
                 'userUUID': ['is required']
             }
         })
+        return
     }
+
+    const logs = await selectFlightLog(userUUID as string)
+
+    if (logs.length === 0) {
+        res.status(404).json({
+            message: 'Not Found',
+            errors: {
+                'flightLogs': ['not found']
+            }
+        })
+        return
+    }
+
+    res.status(200).json({
+        message: 'user flight logs found',
+        data: {
+            flightLogs: logs,
+        }
+    })
+
 }
 
 /**

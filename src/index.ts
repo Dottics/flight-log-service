@@ -7,6 +7,7 @@ import { redis } from './database/redisDB'
 import { home } from './handler/home'
 import { error } from './handler/error'
 import { permissionRequired } from './utils/permission-required'
+import { getFlightLogs } from './handler/flight-log'
 
 // load the .env file
 dotenv.config(process.env.NODE_ENV ? { path: '../.env.test' } : undefined)
@@ -40,7 +41,7 @@ app.get('/', home)
 /* FLIGHT LOG */
 
 //328a0aae-d14a-443a-97f5-480eb4002c87
-app.get('/log', permissionRequired('d14a'), home)
+app.get('/log', permissionRequired('d14a'), getFlightLogs)
 //5f107ca5-6653-4969-80fe-694cd2319861
 app.get('/log/-', permissionRequired('80fe'), home)
 //dd7e4b14-d093-4220-b647-d2b30c5222d0

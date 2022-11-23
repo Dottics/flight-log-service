@@ -66,7 +66,8 @@ const selectFlightLog = async (userUUID: string, UUID?: string) => {
         if (UUID === undefined) {
             // get all user flight logs
             const { rows } = await query(
-                'SELECT * FROM tb_log WHERE user_uuid = $1',
+                `SELECT * FROM tb_log WHERE user_uuid = $1
+                ORDER BY id, create_date`,
                 [userUUID]
             )
             // client.release()

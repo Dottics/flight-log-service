@@ -10,6 +10,7 @@ function buildReq(overrides = {}) {
     return {
         body: {},
         params: {},
+        query: {},
         ...overrides
     } as any
 }
