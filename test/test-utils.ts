@@ -5,6 +5,7 @@ import { Pool } from 'pg'
 function loadEnv() {
     dotenv.config({ path: path.join(__dirname, '../.env.test'), debug: true })
 }
+loadEnv()
 
 function buildReq(overrides = {}) {
     return {
@@ -74,7 +75,7 @@ async function rePopulateDB() {
 }
 
 export {
-    loadEnv,
+//    loadEnv,
     buildReq,
     buildRes,
     buildNext,

@@ -1,5 +1,4 @@
-import { pool } from '../database/db'
-import { loadEnv, testResolve, rePopulateDB } from 'test-utils'
+import { testResolve, rePopulateDB } from 'test-utils'
 import { mockFlightLog } from 'generate'
 import {
     FlightLog,
@@ -10,13 +9,11 @@ import {
 } from './flight-log'
 
 beforeAll(async () => {
-    loadEnv()
-    // reset the database
     await rePopulateDB()
 })
-afterAll(() => {
-    jest.clearAllMocks()
-})
+
+// clean up after all tests
+afterAll(() => jest.clearAllMocks())
 
 describe('FlightLog', () => {
     it('should have public properties', () => {
