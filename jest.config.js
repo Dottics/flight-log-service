@@ -1,8 +1,9 @@
 const path = require('path');
+//import path from 'path'
 
 module.exports = {
   // preset: 'ts-jest',
   testEnvironment: 'node',
   moduleDirectories: ['node_modules', __dirname, path.join(__dirname, 'test')],
-    modulePathIgnorePatterns: [path.join(__dirname, 'dist')]
+  modulePathIgnorePatterns: [path.join(__dirname, 'dist')]
 };

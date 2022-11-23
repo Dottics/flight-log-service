@@ -2,12 +2,26 @@ import express, { Express } from 'express'
 import bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 
-import { home } from 'handler/home'
-import { error } from 'handler/error'
-import { permissionRequired } from 'utils/permission-required'
+import { pool } from './database/db'
+import { redis } from './database/redisDB'
+import { home } from './handler/home'
+import { error } from './handler/error'
+import { permissionRequired } from './utils/permission-required'
 
 // load the .env file
-dotenv.config()
+dotenv.config(process.env.NODE_ENV ? { path: '../.env.test' } : undefined)
+
+/**
+* checkDBConnections is a function called on start of the application to ensure
+* the service is able to connect to the databases.
+*/
+const checkDBConnections = async () => {
+    await pool.query('SELECT NOW()')
+    await redis.connect()
+    await redis.set('flightLog', 'connect')
+}
+// since we cannot have top-level awaits
+checkDBConnections().then(() => {})
 
 const app: Express = express()
 const PORT = 3000
@@ -16,11 +30,25 @@ const PORT = 3000
 // and allows us to directly access the request ip field.
 app.set('trust proxy', true)
 
-app.use(permissionRequired)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
+/* HEALTH CHECK */
+
 app.get('/', home)
+
+/* FLIGHT LOG */
+
+//328a0aae-d14a-443a-97f5-480eb4002c87
+app.get('/log', permissionRequired('d14a'), home)
+//5f107ca5-6653-4969-80fe-694cd2319861
+app.get('/log/-', permissionRequired('80fe'), home)
+//dd7e4b14-d093-4220-b647-d2b30c5222d0
+app.post('/log', permissionRequired('d093'), home)
+//cb79ad64-dc91-4aa2-a5e2-1b9d7dc9ccc1
+app.put('/log/-', permissionRequired('ad64'), home)
+//ea35510b-d6b4-43b0-945d-d67772ea23ed
+app.delete('/log/-', permissionRequired('ea23'), home)
 
 /**
  * Default Error Handler

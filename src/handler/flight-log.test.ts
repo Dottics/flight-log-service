@@ -1,6 +1,6 @@
 import { buildReq, buildRes } from 'test-utils'
 
-import { getFlightLogs } from 'handler/flight-log'
+import { getFlightLogs } from './flight-log'
 
 describe('getFlightLogs', () => {
     it('should return 400 if no user UUID is provided', () => {
