@@ -23,6 +23,7 @@ const map = {
     dbToFlightLog: (v: DBFlightLog): FlightLog => {
         return {
             userUUID: v.user_uuid,
+            UUID: v.uuid,
             date: v.date,
             type: v.type,
             registration: v.registration,

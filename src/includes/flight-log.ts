@@ -3,6 +3,7 @@ import { logError, map } from '../utils/misc'
 
 type FlightLog = {
     userUUID: string;
+    UUID: string;
     date: Date;
     type: string;
     registration: string;
@@ -28,6 +29,7 @@ type FlightLog = {
 }
 type DBFlightLog = {
     user_uuid: string;
+    uuid: string;
     date: Date;
     type: string;
     registration: string;
@@ -131,6 +133,58 @@ const createFlightLog = async (data: FlightLog) => {
             ) RETURNING *`,
             flightLogDestructured
         )
+        return map.dbToFlightLog(rows[0])
+    } catch(e: unknown) {
+        throw logError('createFlightLog', e)
+    }
+}
+
+
+/**
+* updateFlightLog updates a flight log in the database.
+*
+* @param data is the flight log data.
+*/
+const updateFlightLog = async (data: FlightLog) => {
+    const flightLogDestructured = [
+        data.userUUID,
+        data.date.toISOString(),
+        data.type,
+        data.registration,
+        data.pilotInCommand,
+        data.details,
+        data.instrumentNavAids,
+        data.instrumentPlace,
+        data.instrumentActual.toString(),
+        data.instrumentFSTD.toString(),
+        data.instructorSE.toString(),
+        data.instructorME.toString(),
+        data.instructorFSTD.toString(),
+        data.FSTD.toString(),
+        data.engineType,
+        data.dayType,
+        data.dual.toString(),
+        data.PIC.toString(),
+        data.PICUS.toString(),
+        data.copilot.toString(),
+        data.dayLandings.toString(),
+        data.nightLandings.toString(),
+        data.remarks,
+        data.UUID,
+        ]
+    try {
+        const { rows } = await query(
+                `UPDATE tb_log SET
+                user_uuid = $1, date = $2, aircraft_type = $3, registration = $4,
+                pilot_in_command = $5, details = $6, instrument_nav_aids = $7,
+                instrument_place = $8, instrument_actual = $9, instrument_fstd = $10,
+                instructor_se = $11, instructor_me = $12, instructor_fstd = $13,
+                fstd = $14, engine_type = $15, day_type = $16, dual = $17, pic = $18,
+                picus = $19, copilot = $20, day_landings = $21, night_landings = $22,
+                remarks = $23
+                WHERE uuid = $24 RETURNING *`,
+                flightLogDestructured
+                )
         return map.dbToFlightLog(rows[0])
     } catch(e: unknown) {
         throw logError('createFlightLog', e)
