@@ -64,6 +64,7 @@ describe('selectFlightLog', () => {
             remarks: "",
             update_date: expect.any(Date),
             user_uuid: "1ca0ae68-1bf2-4a18-a819-be5aa80ed98e",
+            uuid: expect.any(String)
         })
     })
 
@@ -87,33 +88,32 @@ describe('createFlightLog', () => {
     it('create a new flight log', async () => {
         const log: FlightLog = mockFlightLog()
         const newLog = await createFlightLog(log)
-        expect(newLog).toMatchInlineSnapshot(`
-            {
-              "FSTD": "0.000",
-              "PIC": "0.000",
-              "PICUS": "0.000",
-              "copilot": "0.000",
-              "date": 2022-11-21T16:48:23.000Z,
-              "dayLandings": "0",
-              "dayType": "day",
-              "details": "HKG-CPT",
-              "dual": "0.000",
-              "engineType": "single",
-              "instructorFSTD": "0.000",
-              "instructorME": "0.000",
-              "instructorSE": "0.000",
-              "instrumentActual": "1.000",
-              "instrumentFSTD": "0.000",
-              "instrumentNavAids": "ivl",
-              "instrumentPlace": "jvl",
-              "nightLandings": "1",
-              "pilotInCommand": "SELF",
-              "registration": "ZXYIOU",
-              "remarks": "weather conditions not ideal",
-              "type": undefined,
-              "userUUID": "54f94bbc-1394-4796-a5a0-7e847afbb813",
-            }
-        `)
+        expect(newLog).toMatchObject({
+            type: "A310",
+            copilot: 0,
+            date: expect.any(Date),
+            dayLandings: 0,
+            dayType: "day",
+            details: "HKG-CPT",
+            dual: 0,
+            engineType: "single",
+            FSTD: 0,
+            instructorFSTD: 0,
+            instructorME: 0,
+            instructorSE: 0,
+            instrumentActual: 1,
+            instrumentFSTD: 0,
+            instrumentNavAids: "ivl",
+            instrumentPlace: "jvl",
+            nightLandings: 1,
+            PIC: 0,
+            PICUS: 0,
+            pilotInCommand: "SELF",
+            registration: "ZXYIOU",
+            remarks: "weather conditions not ideal",
+            userUUID: "54f94bbc-1394-4796-a5a0-7e847afbb813",
+            UUID: expect.any(String)
+        })
     })
 })
 
