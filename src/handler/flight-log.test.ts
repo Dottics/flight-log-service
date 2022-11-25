@@ -399,8 +399,14 @@ describe('postFlightLog', () => {
 
         await postFlightLog(req, res)
 
-        console.log(res.json.mock.calls[0][0].errors)
-        expect(res.status).toHaveBeenCalledWith(200)
+        expect(res.status).toHaveBeenCalledWith(201)
         expect(res.status).toHaveBeenCalledTimes(1)
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'flight log saved',
+            data: {
+                flightLog: testFlightLog
+            }
+        })
+        expect(res.json).toHaveBeenCalledTimes(1)
     })
 })
