@@ -5,7 +5,7 @@ const mockFlightLog = (overrides: Partial<FlightLog> = {}): FlightLog => {
         UUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
         userUUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
         date: new Date('2022-11-21T18:48:23.000Z'),
-        type: 'A310',
+        aircraftType: 'A310',
         registration: 'ZXYIOU',
         pilotInCommand: 'SELF',
         details: 'HKG-CPT',

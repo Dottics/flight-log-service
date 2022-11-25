@@ -5,7 +5,7 @@ type FlightLog = {
     userUUID: string;
     UUID: string;
     date: Date;
-    type: string;
+    aircraftType: string;
     registration: string;
     pilotInCommand: string;
     details: string;
@@ -99,7 +99,7 @@ const createFlightLog = async (data: FlightLog) => {
     const flightLogDestructured = [
         data.userUUID,
         data.date.toISOString(),
-        data.type,
+        data.aircraftType,
         data.registration,
         data.pilotInCommand,
         data.details,
@@ -150,7 +150,7 @@ const updateFlightLog = async (data: FlightLog) => {
     const flightLogDestructured = [
         data.userUUID,
         data.date.toISOString(),
-        data.type,
+        data.aircraftType,
         data.registration,
         data.pilotInCommand,
         data.details,

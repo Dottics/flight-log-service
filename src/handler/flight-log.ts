@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
-import { selectFlightLog } from '../includes/flight-log'
+import {createFlightLog, selectFlightLog} from '../includes/flight-log'
 import { v } from '../utils/validator'
+import { map } from '../utils/misc'
 
 /**
 * getFlightLogs aggregates all the user's flight logs and sends all of them to
@@ -22,7 +23,7 @@ const getFlightLogs = async (req: Request, res: Response) => {
     if (!valid) {
         res.status(400).json({
             message: 'Bad Request',
-            errors,
+            errors: map.validationError(errors),
         })
         return
     }
@@ -67,7 +68,7 @@ const getFlightLog = async (req: Request, res: Response) => {
     if (!valid) {
         res.status(400).json({
             message: 'Bad Request',
-            errors: errors.map(e => ({[e.argument]: e.name})),
+            errors: map.validationError(errors),
         })
         return
     }
@@ -93,11 +94,109 @@ const getFlightLog = async (req: Request, res: Response) => {
 * postFlightLog creates a new flight log for a user, then returns all the user's
 * flight logs.
 */
-const postFlightLog = (req: Request, res: Response) => {
-
+const postFlightLog = async (req: Request, res: Response) => {
+    const schema = {
+        type: 'object',
+        properties: {
+            userUUID: {
+                type: 'string',
+                '$ref': '/RegexSchema'
+            },
+            date: {
+                type: 'string',
+                '$ref': '/DateSchema'
+            },
+            aircraftType: {
+                type: 'string',
+            },
+            registration: {
+                type: 'string',
+            },
+            pilotInCommand: {
+                type: 'string',
+            },
+            details: {
+                type: 'string',
+            },
+            instrumentNavAids: {
+                type: 'string',
+            },
+            instrumentPlace: {
+                type: 'string',
+            },
+            instrumentActual: {
+                type: 'number',
+            },
+            instrumentFSTD: {
+                type: 'number',
+            },
+            instructorSE: {
+                type: 'number',
+            },
+            instructorME: {
+                type: 'number',
+            },
+            instructorFSTD: {
+                type: 'number',
+            },
+            FSTD: {
+                type: 'number',
+            },
+            engineType: {
+                type: 'string',
+                pattern: /^(single|multi)$/
+            },
+            dayType: {
+                type: 'string',
+                pattern: /^(day|night)$/
+            },
+            dual: {
+                type: 'number',
+            },
+            PIC: {
+                type: 'number',
+            },
+            PICUS: {
+                type: 'number',
+            },
+            copilot: {
+                type: 'number',
+            },
+            dayLandings: {
+                type: 'number',
+            },
+            nightLandings: {
+                type: 'number',
+            },
+            remarks: {
+                type: 'string',
+            },
+        },
+        required: ['userUUID', 'date', 'aircraftType', 'registration', 'pilotInCommand',
+        'details', 'instrumentNavAids', 'instrumentPlace', 'instrumentActual',
+        'instrumentFSTD', 'instructorSE', 'instructorME', 'instructorFSTD',
+        'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
+        'dayLandings', 'nightLandings', 'remarks'],
+    }
+    const { valid, errors } = v.validate(req.body, schema)
+    if (!valid) {
+        res.status(400).json({
+            message: 'Bad Request',
+            errors: map.validationError(errors),
+        })
+        return
+    }
+    const flightLog = await createFlightLog(req.body)
+    res.status(201).json({
+        message: 'flight log saved',
+        data: {
+            flightLog,
+        },
+    })
 }
 
 export {
     getFlightLogs,
     getFlightLog,
+    postFlightLog,
 }

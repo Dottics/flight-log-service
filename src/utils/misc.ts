@@ -1,4 +1,5 @@
 import { FlightLog, DBFlightLog } from '../includes/flight-log'
+import {ValidationError} from "jsonschema";
 
 /**
 * logError takes an unknown error converts it to an error logs the error with
@@ -25,7 +26,7 @@ const map = {
             userUUID: v.user_uuid,
             UUID: v.uuid,
             date: v.date,
-            type: v.aircraft_type,
+            aircraftType: v.aircraft_type,
             registration: v.registration,
             pilotInCommand: v.pilot_in_command,
             details: v.details,
@@ -47,6 +48,17 @@ const map = {
             nightLandings: parseFloat(v.night_landings),
             remarks: v.remarks,
         }
+    },
+    /**
+    * validationError maps from a validation error to an error that can be
+    * returned to the user.
+    */
+    validationError: (errors: ValidationError[]) => {
+        return errors.map((err) => {
+            const e = err as Partial<ValidationError>
+            delete e.schema
+            return e
+        })
     }
 }
 

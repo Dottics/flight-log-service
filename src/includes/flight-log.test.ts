@@ -21,7 +21,7 @@ describe('FlightLog', () => {
 
         expect(f.userUUID).toEqual('54f94bbc-1394-4796-a5a0-7e847afbb813')
         expect(f.date.toISOString()).toEqual('2022-11-21T18:48:23.000Z')
-        expect(f.type).toEqual('A310')
+        expect(f.aircraftType).toEqual('A310')
         expect(f.registration).toEqual('ZXYIOU')
     })
 })
@@ -45,7 +45,7 @@ describe('selectFlightLog', () => {
         const logs = await selectFlightLog(userUUID)
         expect(logs.length).toBeGreaterThanOrEqual(5)
         expect(logs[0]).toMatchObject({
-            type: 'C150',
+//            aircraftType: 'C150',
             copilot: 0,
             date: new Date('2007-02-03T22:00:00.000Z'),
             dayLandings: 0,
@@ -78,7 +78,7 @@ describe('selectFlightLog', () => {
         const logs = await selectFlightLog(userUUID, UUID)
         expect(logs).toHaveLength(1)
         expect(logs[0]).toMatchObject({
-            type: 'C425',
+            aircraftType: 'C425',
             copilot: 1.5,
             date: new Date('2013-11-08T22:00:00.000Z'),
             dayLandings: 1,
