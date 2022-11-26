@@ -1,5 +1,5 @@
 import { buildReq, buildRes } from 'test-utils'
-import { getFlightLogs, getFlightLog, postFlightLog } from './flight-log'
+import {getFlightLogs, getFlightLog, postFlightLog, putFlightLog} from './flight-log'
 import * as includesFlightLog from '../includes/flight-log'
 //import { selectFlightLog, createFlightLog } from '../includes/flight-log';
 import { mockFlightLog } from 'generate'
@@ -7,6 +7,7 @@ import { mockFlightLog } from 'generate'
 jest.mock('../includes/flight-log')
 const mockSelectFlightLog = jest.spyOn(includesFlightLog, 'selectFlightLog')
 const mockCreateFlightLog = jest.spyOn(includesFlightLog, 'createFlightLog')
+const mockUpdateFlightLog = jest.spyOn(includesFlightLog, 'updateFlightLog')
 
 // clean up to clear all mocks
 afterAll(() => jest.clearAllMocks())
@@ -19,24 +20,22 @@ describe('getFlightLogs', () => {
         await getFlightLogs(req, res)
         
         expect(res.status).toHaveBeenCalledWith(400)
-        expect(res.json.mock.calls[0]).toMatchInlineSnapshot(`
-[
-  {
-    "errors": [
-      ValidationError {
-        "argument": "userUUID",
-        "instance": {},
-        "message": "requires property "userUUID"",
-        "name": "required",
-        "path": [],
-        "property": "instance",
-        "stack": "instance requires property "userUUID"",
-      },
-    ],
-    "message": "Bad Request",
-  },
-]
-`)
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": [
+                ValidationError {
+                  "argument": "userUUID",
+                  "instance": {},
+                  "message": "requires property "userUUID"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "userUUID"",
+                },
+              ],
+              "message": "Bad Request",
+            }
+        `)
     })
 
     it(`should return 404 if no flight logs found for a user`, async () => {
@@ -48,17 +47,15 @@ describe('getFlightLogs', () => {
         await getFlightLogs(req, res)
 
         expect(res.status).toHaveBeenCalledWith(404)
-        expect(res.json.mock.calls[0]).toMatchInlineSnapshot(`
-            [
-              {
-                "errors": {
-                  "flightLogs": [
-                    "not found",
-                  ],
-                },
-                "message": "Not Found",
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": {
+                "flightLogs": [
+                  "not found",
+                ],
               },
-            ]
+              "message": "Not Found",
+            }
         `)
     })
 
@@ -93,33 +90,31 @@ describe('getFlightLogs', () => {
 
         await getFlightLog(req, res)
         expect(res.status).toHaveBeenCalledWith(400)
-        expect(res.json.mock.calls[0]).toMatchInlineSnapshot(`
-[
-  {
-    "errors": [
-      ValidationError {
-        "argument": "userUUID",
-        "instance": {},
-        "message": "requires property "userUUID"",
-        "name": "required",
-        "path": [],
-        "property": "instance",
-        "stack": "instance requires property "userUUID"",
-      },
-      ValidationError {
-        "argument": "UUID",
-        "instance": {},
-        "message": "requires property "UUID"",
-        "name": "required",
-        "path": [],
-        "property": "instance",
-        "stack": "instance requires property "UUID"",
-      },
-    ],
-    "message": "Bad Request",
-  },
-]
-`)
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": [
+                ValidationError {
+                  "argument": "userUUID",
+                  "instance": {},
+                  "message": "requires property "userUUID"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "userUUID"",
+                },
+                ValidationError {
+                  "argument": "UUID",
+                  "instance": {},
+                  "message": "requires property "UUID"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "UUID"",
+                },
+              ],
+              "message": "Bad Request",
+            }
+        `)
     })
 
     it('should validate the query parameters', async () => {
@@ -131,17 +126,15 @@ describe('getFlightLogs', () => {
 
         await getFlightLog(req, res)
         expect(res.status).toHaveBeenCalledWith(404)
-        expect(res.json.mock.calls[0]).toMatchInlineSnapshot(`
-            [
-              {
-                "errors": {
-                  "flightLog": [
-                    "not found",
-                  ],
-                },
-                "message": "Not Found",
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": {
+                "flightLog": [
+                  "not found",
+                ],
               },
-            ]
+              "message": "Not Found",
+            }
         `)
     })
     it('should validate the query parameters', async () => {
@@ -403,6 +396,261 @@ describe('postFlightLog', () => {
         expect(res.status).toHaveBeenCalledTimes(1)
         expect(res.json).toHaveBeenCalledWith({
             message: 'flight log saved',
+            data: {
+                flightLog: testFlightLog
+            }
+        })
+        expect(res.json).toHaveBeenCalledTimes(1)
+    })
+})
+
+describe('putFlightLog', () => {
+    it('should validate the data', async () => {
+        const req = buildReq()
+        const res = buildRes()
+
+        await putFlightLog(req, res)
+
+        expect(res.status).toHaveBeenCalledWith(400)
+        expect(res.status).toHaveBeenCalledTimes(1)
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": [
+                ValidationError {
+                  "argument": "userUUID",
+                  "instance": {},
+                  "message": "requires property "userUUID"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "userUUID"",
+                },
+                ValidationError {
+                  "argument": "date",
+                  "instance": {},
+                  "message": "requires property "date"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "date"",
+                },
+                ValidationError {
+                  "argument": "aircraftType",
+                  "instance": {},
+                  "message": "requires property "aircraftType"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "aircraftType"",
+                },
+                ValidationError {
+                  "argument": "registration",
+                  "instance": {},
+                  "message": "requires property "registration"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "registration"",
+                },
+                ValidationError {
+                  "argument": "pilotInCommand",
+                  "instance": {},
+                  "message": "requires property "pilotInCommand"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "pilotInCommand"",
+                },
+                ValidationError {
+                  "argument": "details",
+                  "instance": {},
+                  "message": "requires property "details"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "details"",
+                },
+                ValidationError {
+                  "argument": "instrumentNavAids",
+                  "instance": {},
+                  "message": "requires property "instrumentNavAids"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instrumentNavAids"",
+                },
+                ValidationError {
+                  "argument": "instrumentPlace",
+                  "instance": {},
+                  "message": "requires property "instrumentPlace"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instrumentPlace"",
+                },
+                ValidationError {
+                  "argument": "instrumentActual",
+                  "instance": {},
+                  "message": "requires property "instrumentActual"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instrumentActual"",
+                },
+                ValidationError {
+                  "argument": "instrumentFSTD",
+                  "instance": {},
+                  "message": "requires property "instrumentFSTD"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instrumentFSTD"",
+                },
+                ValidationError {
+                  "argument": "instructorSE",
+                  "instance": {},
+                  "message": "requires property "instructorSE"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instructorSE"",
+                },
+                ValidationError {
+                  "argument": "instructorME",
+                  "instance": {},
+                  "message": "requires property "instructorME"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instructorME"",
+                },
+                ValidationError {
+                  "argument": "instructorFSTD",
+                  "instance": {},
+                  "message": "requires property "instructorFSTD"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "instructorFSTD"",
+                },
+                ValidationError {
+                  "argument": "FSTD",
+                  "instance": {},
+                  "message": "requires property "FSTD"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "FSTD"",
+                },
+                ValidationError {
+                  "argument": "engineType",
+                  "instance": {},
+                  "message": "requires property "engineType"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "engineType"",
+                },
+                ValidationError {
+                  "argument": "dayType",
+                  "instance": {},
+                  "message": "requires property "dayType"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "dayType"",
+                },
+                ValidationError {
+                  "argument": "dual",
+                  "instance": {},
+                  "message": "requires property "dual"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "dual"",
+                },
+                ValidationError {
+                  "argument": "PIC",
+                  "instance": {},
+                  "message": "requires property "PIC"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "PIC"",
+                },
+                ValidationError {
+                  "argument": "PICUS",
+                  "instance": {},
+                  "message": "requires property "PICUS"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "PICUS"",
+                },
+                ValidationError {
+                  "argument": "copilot",
+                  "instance": {},
+                  "message": "requires property "copilot"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "copilot"",
+                },
+                ValidationError {
+                  "argument": "dayLandings",
+                  "instance": {},
+                  "message": "requires property "dayLandings"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "dayLandings"",
+                },
+                ValidationError {
+                  "argument": "nightLandings",
+                  "instance": {},
+                  "message": "requires property "nightLandings"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "nightLandings"",
+                },
+                ValidationError {
+                  "argument": "remarks",
+                  "instance": {},
+                  "message": "requires property "remarks"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "remarks"",
+                },
+              ],
+              "message": "Bad Request",
+            }
+        `)
+        expect(res.json).toHaveBeenCalledTimes(1)
+    })
+
+    it('should update the flight log data', async () => {
+        const testFlightLog = mockFlightLog({
+            aircraftType: 'F210',
+            pilotInCommand: 'J Bond'
+        })
+        mockUpdateFlightLog.mockResolvedValueOnce(testFlightLog)
+
+        const req = buildReq({
+            body: {
+                ...testFlightLog,
+                date: testFlightLog.date.toISOString()
+            }
+        })
+        const res = buildRes()
+
+        await putFlightLog(req, res)
+
+        expect(res.status).toHaveBeenCalledWith(200)
+        expect(res.status).toHaveBeenCalledTimes(1)
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'flight log updated',
             data: {
                 flightLog: testFlightLog
             }

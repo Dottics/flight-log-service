@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import {createFlightLog, selectFlightLog} from '../includes/flight-log'
+import {createFlightLog, selectFlightLog, updateFlightLog} from '../includes/flight-log'
 import { v } from '../utils/validator'
 import { map } from '../utils/misc'
 
@@ -195,8 +195,115 @@ const postFlightLog = async (req: Request, res: Response) => {
     })
 }
 
+/**
+* putFlightLog is the handler to update a flight log's data.
+*/
+const putFlightLog = async (req: Request, res: Response) => {
+    const schema = {
+        type: 'object',
+        properties: {
+            userUUID: {
+                type: 'string',
+                '$ref': '/RegexSchema'
+            },
+            date: {
+                type: 'string',
+                '$ref': '/DateSchema'
+            },
+            aircraftType: {
+                type: 'string',
+            },
+            registration: {
+                type: 'string',
+            },
+            pilotInCommand: {
+                type: 'string',
+            },
+            details: {
+                type: 'string',
+            },
+            instrumentNavAids: {
+                type: 'string',
+            },
+            instrumentPlace: {
+                type: 'string',
+            },
+            instrumentActual: {
+                type: 'number',
+            },
+            instrumentFSTD: {
+                type: 'number',
+            },
+            instructorSE: {
+                type: 'number',
+            },
+            instructorME: {
+                type: 'number',
+            },
+            instructorFSTD: {
+                type: 'number',
+            },
+            FSTD: {
+                type: 'number',
+            },
+            engineType: {
+                type: 'string',
+                pattern: /^(single|multi)$/
+            },
+            dayType: {
+                type: 'string',
+                pattern: /^(day|night)$/
+            },
+            dual: {
+                type: 'number',
+            },
+            PIC: {
+                type: 'number',
+            },
+            PICUS: {
+                type: 'number',
+            },
+            copilot: {
+                type: 'number',
+            },
+            dayLandings: {
+                type: 'number',
+            },
+            nightLandings: {
+                type: 'number',
+            },
+            remarks: {
+                type: 'string',
+            },
+        },
+        required: ['userUUID', 'date', 'aircraftType', 'registration', 'pilotInCommand',
+                   'details', 'instrumentNavAids', 'instrumentPlace', 'instrumentActual',
+                   'instrumentFSTD', 'instructorSE', 'instructorME', 'instructorFSTD',
+                   'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
+                   'dayLandings', 'nightLandings', 'remarks'],
+    }
+    const { valid, errors } = v.validate(req.body, schema)
+    if (!valid) {
+        res.status(400).json({
+            message: 'Bad Request',
+            errors: map.validationError(errors),
+        })
+        return
+    }
+
+    const flightLog = await updateFlightLog(req.body)
+
+    res.status(200).json({
+        message: 'flight log updated',
+        data: {
+            flightLog,
+        }
+    })
+}
+
 export {
     getFlightLogs,
     getFlightLog,
     postFlightLog,
+    putFlightLog
 }
