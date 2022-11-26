@@ -1,13 +1,13 @@
 import { buildReq, buildRes } from 'test-utils'
-import {getFlightLogs, getFlightLog, postFlightLog, putFlightLog} from './flight-log'
+import { getFlightLogs, getFlightLog, postFlightLog, putFlightLog, delFlightLog } from './flight-log'
 import * as includesFlightLog from '../includes/flight-log'
-//import { selectFlightLog, createFlightLog } from '../includes/flight-log';
 import { mockFlightLog } from 'generate'
 
 jest.mock('../includes/flight-log')
 const mockSelectFlightLog = jest.spyOn(includesFlightLog, 'selectFlightLog')
 const mockCreateFlightLog = jest.spyOn(includesFlightLog, 'createFlightLog')
 const mockUpdateFlightLog = jest.spyOn(includesFlightLog, 'updateFlightLog')
+const mockDeleteFlightLog = jest.spyOn(includesFlightLog, 'deleteFlightLog')
 
 // clean up to clear all mocks
 afterAll(() => jest.clearAllMocks())
@@ -656,5 +656,68 @@ describe('putFlightLog', () => {
             }
         })
         expect(res.json).toHaveBeenCalledTimes(1)
+    })
+})
+
+describe('deleteFlightLog', () => {
+    it('should validate the query parameters', async () => {
+        const req = buildReq()
+        const res = buildRes()
+
+        await delFlightLog(req, res)
+
+        expect(res.status).toHaveBeenCalledWith(400)
+        expect(res.status).toHaveBeenCalledTimes(1)
+
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": [
+                ValidationError {
+                  "argument": "userUUID",
+                  "instance": {},
+                  "message": "requires property "userUUID"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "userUUID"",
+                },
+                ValidationError {
+                  "argument": "UUID",
+                  "instance": {},
+                  "message": "requires property "UUID"",
+                  "name": "required",
+                  "path": [],
+                  "property": "instance",
+                  "stack": "instance requires property "UUID"",
+                },
+              ],
+              "message": "Bad Request",
+            }
+        `)
+        expect(res.json).toHaveBeenCalledTimes(1)
+    })
+
+    it('should parse and call the delete function with the correct parameters', async () => {
+        const testFlightLog = mockFlightLog()
+        const testQueryParams = {
+            userUUID: '3d67cb98-0f32-4ae3-82e5-b6a18b45ea9c',
+            UUID: '9f7ac955-c53a-43c1-b4ca-80ca43766e46',
+        }
+        mockDeleteFlightLog.mockResolvedValueOnce(testFlightLog)
+        const req = buildReq({ query: testQueryParams })
+        const res = buildRes()
+
+        await delFlightLog(req, res)
+
+        expect(mockDeleteFlightLog).toHaveBeenCalledWith(testQueryParams.userUUID, testQueryParams.UUID)
+
+        expect(res.status).toHaveBeenCalledWith(200)
+        expect(res.status).toHaveBeenCalledTimes(1)
+
+        expect(res.json).toHaveBeenCalledTimes(1)
+        expect(res.json.mock.calls[0][0]).toMatchObject({
+            message: 'flight log deleted',
+            data: { flightLog: testFlightLog }
+        })
     })
 })

@@ -1,7 +1,23 @@
 import { Request, Response } from 'express'
-import {createFlightLog, selectFlightLog, updateFlightLog} from '../includes/flight-log'
+import { Schema, ValidationError } from 'jsonschema'
+import {createFlightLog, deleteFlightLog, selectFlightLog, updateFlightLog} from '../includes/flight-log'
 import { v } from '../utils/validator'
 import { map } from '../utils/misc'
+
+/**
+* validateData validates the data instance, returns a failed validation body
+* or null if the data is valid.
+*/
+const validateData = (instance: any, schema: Schema): {message: string, errors: Partial<ValidationError>[]} | null => {
+    const { valid, errors } = v.validate(instance, schema)
+    if (!valid) {
+        return {
+            message: 'Bad Request',
+            errors: map.validationError(errors),
+        }
+    }
+    return null
+}
 
 /**
 * getFlightLogs aggregates all the user's flight logs and sends all of them to
@@ -19,12 +35,9 @@ const getFlightLogs = async (req: Request, res: Response) => {
         },
         required: ['userUUID'],
     }
-    const { valid, errors } = v.validate(req.query, schema)
-    if (!valid) {
-        res.status(400).json({
-            message: 'Bad Request',
-            errors: map.validationError(errors),
-        })
+    const validationBody = validateData(req.query, schema)
+    if (validationBody) {
+        res.status(400).json(validationBody)
         return
     }
 
@@ -64,12 +77,9 @@ const getFlightLog = async (req: Request, res: Response) => {
         },
         required: ['userUUID', 'UUID'],
     }
-    const { valid, errors } = v.validate(req.query, schema)
-    if (!valid) {
-        res.status(400).json({
-            message: 'Bad Request',
-            errors: map.validationError(errors),
-        })
+    const validationBody = validateData(req.query, schema)
+    if (validationBody) {
+        res.status(400).json(validationBody)
         return
     }
     const { userUUID, UUID } = req.query
@@ -84,9 +94,7 @@ const getFlightLog = async (req: Request, res: Response) => {
     }
     res.status(200).json({
         message: 'flight log found',
-        data: {
-            flightLog: logs[0]
-        }
+        data: { flightLog: logs[0] }
     })
 }
 
@@ -178,20 +186,15 @@ const postFlightLog = async (req: Request, res: Response) => {
         'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
         'dayLandings', 'nightLandings', 'remarks'],
     }
-    const { valid, errors } = v.validate(req.body, schema)
-    if (!valid) {
-        res.status(400).json({
-            message: 'Bad Request',
-            errors: map.validationError(errors),
-        })
+    const validationBody = validateData(req.body, schema)
+    if (validationBody) {
+        res.status(400).json(validationBody)
         return
     }
     const flightLog = await createFlightLog(req.body)
     res.status(201).json({
         message: 'flight log saved',
-        data: {
-            flightLog,
-        },
+        data: { flightLog },
     })
 }
 
@@ -282,12 +285,9 @@ const putFlightLog = async (req: Request, res: Response) => {
                    'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
                    'dayLandings', 'nightLandings', 'remarks'],
     }
-    const { valid, errors } = v.validate(req.body, schema)
-    if (!valid) {
-        res.status(400).json({
-            message: 'Bad Request',
-            errors: map.validationError(errors),
-        })
+    const validationBody = validateData(req.body, schema)
+    if (validationBody) {
+        res.status(400).json(validationBody)
         return
     }
 
@@ -295,9 +295,40 @@ const putFlightLog = async (req: Request, res: Response) => {
 
     res.status(200).json({
         message: 'flight log updated',
-        data: {
-            flightLog,
-        }
+        data: { flightLog }
+    })
+}
+
+/**
+* deleteFlightLog deletes a flight log record
+*/
+const delFlightLog = async (req: Request, res: Response) => {
+    const schema = {
+        type: 'object',
+        properties: {
+            userUUID: {
+                type: 'string',
+                $ref: '/RegexSchema'
+            },
+            UUID: {
+                type: 'string',
+                $ref: '/RegexSchema'
+            },
+        },
+        required: ['userUUID', 'UUID']
+    }
+    const validationBody = validateData(req.query, schema)
+    if (validationBody) {
+        res.status(400).json(validationBody)
+        return
+    }
+
+    const { userUUID, UUID } = req.query
+    const flightLog = await deleteFlightLog(userUUID as string, UUID as string)
+
+    res.status(200).json({
+        message: 'flight log deleted',
+        data: { flightLog }
     })
 }
 
@@ -305,5 +336,6 @@ export {
     getFlightLogs,
     getFlightLog,
     postFlightLog,
-    putFlightLog
+    putFlightLog,
+    delFlightLog
 }

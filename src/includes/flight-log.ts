@@ -193,7 +193,7 @@ const updateFlightLog = async (data: FlightLog) => {
 }
 
 /**
-* deleteFlightLog delete's a specific flight log from the database.
+* delelteFlightLog delete's a specific flight log from the database.
 *
 * @param userUUID is the user's UUID who's flight logs are to be deleted.
 * @param UUID is the UUID of a specific flight log to be deleted.
