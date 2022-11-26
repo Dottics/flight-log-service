@@ -204,6 +204,9 @@ const deleteFlightLog = async (userUUID: string, UUID: string) => {
             'DELETE FROM tb_log WHERE user_uuid = $1 AND uuid = $2 RETURNING *',
             [userUUID, UUID]
         )
+        if (rows.length === 0) {
+            return null
+        }
         return map.dbToFlightLog(rows[0])
     } catch(e: unknown) {
         throw logError('deleteFlightLog', e)

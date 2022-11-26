@@ -325,6 +325,15 @@ const delFlightLog = async (req: Request, res: Response) => {
 
     const { userUUID, UUID } = req.query
     const flightLog = await deleteFlightLog(userUUID as string, UUID as string)
+    if (!flightLog) {
+        res.status(404).json({
+            message: 'Not Found',
+            errors: {
+                mismatch: ['userUUID and UUID do not match']
+            }
+        })
+        return
+    }
 
     res.status(200).json({
         message: 'flight log deleted',

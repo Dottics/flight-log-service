@@ -720,4 +720,31 @@ describe('deleteFlightLog', () => {
             data: { flightLog: testFlightLog }
         })
     })
+
+    it('should return a 404 error if user and UUID do not match', async () => {
+        const testQueryParams = {
+            userUUID: '3d67cb98-0f32-4ae3-82e5-b6a18b45ea9c',
+            UUID: '9f7ac955-c53a-43c1-b4ca-80ca43766e46',
+        }
+        mockDeleteFlightLog.mockResolvedValueOnce(null)
+        const req = buildReq({ query: testQueryParams })
+        const res = buildRes()
+
+        await delFlightLog(req, res)
+
+        expect(res.status).toHaveBeenCalledWith(404)
+        expect(res.status).toHaveBeenCalledTimes(1)
+
+        expect(res.json).toHaveBeenCalledTimes(1)
+        expect(res.json.mock.calls[0][0]).toMatchInlineSnapshot(`
+            {
+              "errors": {
+                "mismatch": [
+                  "userUUID and UUID do not match",
+                ],
+              },
+              "message": "Not Found",
+            }
+        `)
+    })
 })

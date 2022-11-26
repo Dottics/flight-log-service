@@ -142,6 +142,13 @@ describe('updateFlightLog', () => {
 })
 
 describe('deleteFlightLog', () => {
+    it('should return an empty array if the user does not have a flight log', async () => {
+        const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
+        const randomUUID = 'cf3bee16-0a56-40b6-b93f-b30245ce11ec'
+
+        let log = await deleteFlightLog(userUUID, randomUUID)
+        expect(log).toBeNull()
+    })
     it('should delete a flight log from the database', async () => {
         const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
         const UUID = '566b8e0d-da2e-4524-80db-573ac9dcd9b7'
