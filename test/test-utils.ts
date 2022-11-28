@@ -1,7 +1,9 @@
 //import { Request, Response} from 'express'
+import jwt, {SignOptions} from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
 import path from 'path'
 import { Pool } from 'pg'
+import { redis } from '../src/database/redisDB'
 
 function loadEnv() {
     dotenv.config({ path: path.join(__dirname, '../.env.test'), debug: true })
@@ -75,11 +77,39 @@ async function rePopulateDB() {
     await setDefaultData()
 }
 
+/**
+* buildRedisJWT sign's a JWT token, and stores the token in the redis database.
+* then returns the token.
+*/
+const buildRedisJWT = async (data?: any): Promise<string> => {
+    await redis.connect()
+    const d = {
+        //exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        created: new Date().toISOString(),
+        'u-id': 'foobar',
+        's-id': 'foobar-session',
+        permission: ['TEST1', 'TEST2', 'TEST3'],
+        ...data,
+    }
+    const secret = process.env.JWT_CODE ?? ''
+    const options = {
+        algorithm: process.env.JWT_ALGORITHM ?? 'HS256'
+    } as SignOptions
+
+    // sign the token
+    const token = jwt.sign(d, secret, options)
+    // set the redis token
+    await redis.set(d['s-id'], JSON.stringify(d))
+    await redis.quit()
+    return token
+}
+
 export {
 //    loadEnv,
     buildReq,
     buildRes,
     buildNext,
     testResolve,
-    rePopulateDB
+    rePopulateDB,
+    buildRedisJWT
 }
