@@ -29,46 +29,61 @@
 -- ############################################################################
 
 DROP TABLE IF EXISTS tb_log;
-
+DROP TABLE IF EXISTS tb_aircraft_type;
 -- ############################################################################
 -- ### TABLES                                                               ###
 -- ############################################################################
 
+CREATE TABLE IF NOT EXISTS tb_aircraft_type
+(
+    id          SERIAL PRIMARY KEY,
+    uuid        UUID      DEFAULT uuid_generate_v4(),
+    name        VARCHAR(32)            NOT NULL,
+    description TEXT                   NOT NULL,
+    active      BOOLEAN   DEFAULT TRUE NOT NULL,
+    create_date TIMESTAMP DEFAULT now(),
+    update_date TIMESTAMP DEFAULT now()
+);
+CREATE TRIGGER set_aircraft_type_update_date
+    AFTER UPDATE
+    ON tb_aircraft_type
+    FOR EACH ROW
+EXECUTE PROCEDURE set_update_date_column();
 
 CREATE TABLE IF NOT EXISTS tb_log
 (
-id                  SERIAL PRIMARY KEY,
-uuid                UUID DEFAULT  uuid_generate_v4(),
-user_uuid           UUID          NOT NULL,
-date                TIMESTAMP     NOT NULL,
-aircraft_type       VARCHAR(32)   NOT NULL,
-registration        VARCHAR(256)  NOT NULL,
-pilot_in_command    VARCHAR(128)  NOT NULL,
-details             TEXT          NOT NULL,
-instrument_nav_aids VARCHAR(64)   NOT NULL,
-instrument_place    VARCHAR(64)   NOT NULL,
-instrument_actual   NUMERIC(5, 3) NOT NULL,
-instrument_fstd     NUMERIC(5, 3) NOT NULL,
-instructor_se       NUMERIC(5, 3) NOT NULL,
-instructor_me       NUMERIC(5, 3) NOT NULL,
-instructor_fstd     NUMERIC(5, 3) NOT NULL,
-fstd                NUMERIC(5, 3) NOT NULL,
-engine_type         engine        NOT NULL,
-day_type            day           NOT NULL,
-dual                NUMERIC(5, 3) NOT NULL,
-pic                 NUMERIC(5, 3) NOT NULL,
-picus               NUMERIC(5, 3) NOT NULL,
-copilot             NUMERIC(5, 3) NOT NULL,
-day_landings        NUMERIC(5)    NOT NULL,
-night_landings      NUMERIC(5)    NOT NULL,
-remarks             TEXT          NOT NULL,
-create_date         TIMESTAMP DEFAULT now(),
-update_date         TIMESTAMP DEFAULT now()
+    id                  SERIAL PRIMARY KEY,
+    uuid                UUID      DEFAULT uuid_generate_v4(),
+    user_uuid           UUID                                     NOT NULL,
+    date                TIMESTAMP                                NOT NULL,
+    aircraft_type_id    INTEGER REFERENCES tb_aircraft_type (id) NOT NULL,
+    registration        VARCHAR(256)                             NOT NULL,
+    pilot_in_command    VARCHAR(128)                             NOT NULL,
+    details             TEXT                                     NOT NULL,
+    instrument_nav_aids VARCHAR(64)                              NOT NULL,
+    instrument_place    VARCHAR(64)                              NOT NULL,
+    instrument_actual   NUMERIC(5, 3)                            NOT NULL,
+    instrument_fstd     NUMERIC(5, 3)                            NOT NULL,
+    instructor_se       NUMERIC(5, 3)                            NOT NULL,
+    instructor_me       NUMERIC(5, 3)                            NOT NULL,
+    instructor_fstd     NUMERIC(5, 3)                            NOT NULL,
+    fstd                NUMERIC(5, 3)                            NOT NULL,
+    engine_type         engine                                   NOT NULL,
+    day_type            day                                      NOT NULL,
+    dual                NUMERIC(5, 3)                            NOT NULL,
+    pic                 NUMERIC(5, 3)                            NOT NULL,
+    picus               NUMERIC(5, 3)                            NOT NULL,
+    copilot             NUMERIC(5, 3)                            NOT NULL,
+    day_landings        NUMERIC(5)                               NOT NULL,
+    night_landings      NUMERIC(5)                               NOT NULL,
+    remarks             TEXT                                     NOT NULL,
+    create_date         TIMESTAMP DEFAULT now(),
+    update_date         TIMESTAMP DEFAULT now()
 );
 CREATE TRIGGER set_log_update_date
-AFTER UPDATE
-ON tb_log
-FOR EACH ROW
+    AFTER UPDATE
+    ON tb_log
+    FOR EACH ROW
 EXECUTE PROCEDURE set_update_date_column();
 
 -- ############################################################################
