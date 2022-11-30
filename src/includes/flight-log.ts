@@ -66,7 +66,31 @@ const selectFlightLog = async (userUUID: string, UUID?: string) => {
         if (UUID === undefined) {
             // get all user flight logs
             const { rows } = await query(
-                `SELECT * FROM tb_log WHERE user_uuid = $1
+                `SELECT tl.uuid,
+                tl.user_uuid,
+                tl.date,
+                tat.name AS aircraft_type,
+                tl.registration,
+                tl.pilot_in_command,
+                tl.details,
+                tl.instrument_nav_aids,
+                tl.instrument_place,
+                tl.instrument_actual,
+                tl.instrument_fstd,
+                tl.instructor_se,
+                tl.instructor_me,
+                tl.instructor_fstd,
+                tl.fstd,
+                tl.engine_type,
+                tl.day_type,
+                tl.dual,
+                tl.pic,
+                tl.picus,
+                tl.copilot,
+                tl.day_landings,
+                tl.night_landings,
+                tl.remarks
+                FROM tb_log AS tl INNER JOIN tb_aircraft_type AS tat ON tat.id = tl.aircraft_type_id; WHERE user_uuid = $1
                 ORDER BY id, create_date`,
                 [userUUID]
             )
@@ -76,7 +100,31 @@ const selectFlightLog = async (userUUID: string, UUID?: string) => {
         if (userUUID && UUID) {
             // get a specific flight log
             const { rows } = await query(
-                'SELECT * FROM tb_log WHERE user_uuid = $1 AND uuid = $2',
+                `SELECT tl.uuid,
+                tl.user_uuid,
+                tl.date,
+                tat.name AS aircraft_type,
+                tl.registration,
+                tl.pilot_in_command,
+                tl.details,
+                tl.instrument_nav_aids,
+                tl.instrument_place,
+                tl.instrument_actual,
+                tl.instrument_fstd,
+                tl.instructor_se,
+                tl.instructor_me,
+                tl.instructor_fstd,
+                tl.fstd,
+                tl.engine_type,
+                tl.day_type,
+                tl.dual,
+                tl.pic,
+                tl.picus,
+                tl.copilot,
+                tl.day_landings,
+                tl.night_landings,
+                tl.remarks
+                FROM tb_log AS tl INNER JOIN tb_aircraft_type AS tat ON tat.id = tl.aircraft_type_id; WHERE user_uuid = $1 AND uuid = $2`,
                 [userUUID, UUID]
             )
             // client.release()
