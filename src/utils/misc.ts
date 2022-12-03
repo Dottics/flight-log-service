@@ -1,4 +1,4 @@
-import { FlightLog, DBFlightLog } from '../includes/flight-log'
+import { FlightLog, DBSelectFlightLog, DBFlightLog } from '../includes/flight-log'
 import {ValidationError} from "jsonschema";
 
 /**
@@ -14,6 +14,10 @@ const logError = (fnName: string, e: unknown): Error => {
     return err
 }
 
+/**
+* map is an object that contains generic and frequently used mappings from
+* one object structure to another.
+*/
 const map = {
     flightLogToDB: (v: FlightLog) => {
 
@@ -22,6 +26,37 @@ const map = {
     * dbToFlightLog converts from DB flight log to JSON flight log.
     */
     dbToFlightLog: (v: DBFlightLog): FlightLog => {
+        return {
+            userUUID: v.user_uuid,
+            UUID: v.uuid,
+            date: v.date,
+            aircraftType: '',
+            registration: v.registration,
+            pilotInCommand: v.pilot_in_command,
+            details: v.details,
+            instrumentNavAids: v.instrument_nav_aids,
+            instrumentPlace: v.instrument_place,
+            instrumentActual: parseFloat(v.instrument_actual),
+            instrumentFSTD: parseFloat(v.instrument_fstd),
+            instructorSE: parseFloat(v.instructor_se),
+            instructorME: parseFloat(v.instructor_me),
+            instructorFSTD: parseFloat(v.instructor_fstd),
+            FSTD: parseFloat(v.fstd),
+            engineType: v.engine_type,
+            dayType: v.day_type,
+            dual: parseFloat(v.dual),
+            PIC: parseFloat(v.pic),
+            PICUS: parseFloat(v.picus),
+            copilot: parseFloat(v.copilot),
+            dayLandings: parseFloat(v.day_landings),
+            nightLandings: parseFloat(v.night_landings),
+            remarks: v.remarks,
+        }
+    },
+    /**
+    * dbToFlightLog converts from DB flight log to JSON flight log.
+    */
+    dbSelectToFlightLog: (v: DBSelectFlightLog): FlightLog => {
         return {
             userUUID: v.user_uuid,
             UUID: v.uuid,

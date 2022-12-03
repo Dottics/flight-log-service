@@ -1,11 +1,11 @@
 import { testResolve, rePopulateDB } from 'test-utils'
-import { mockFlightLog } from 'generate'
+import { mockFlightLog, mockDBFlightLog } from 'generate'
 import {
     FlightLog,
     selectFlightLog,
     createFlightLog,
     updateFlightLog,
-    deleteFlightLog
+    deleteFlightLog, DBFlightLog
 } from './flight-log'
 
 beforeAll(async () => {
@@ -78,7 +78,7 @@ describe('selectFlightLog', () => {
         const logs = await selectFlightLog(userUUID, UUID)
         expect(logs).toHaveLength(1)
         expect(logs[0]).toMatchObject({
-            aircraftType: 'C425',
+            aircraftType: 'C310',
             copilot: 1.5,
             date: new Date('2013-11-08T22:00:00.000Z'),
             dayLandings: 1,
@@ -117,37 +117,55 @@ describe('selectFlightLog', () => {
 })
 
 describe('createFlightLog', () => {
+    it('should error violates aricraft type foreign key constraint', async () => {
+        const log: DBFlightLog = mockDBFlightLog({
+            aircraft_type_id: 127,
+        })
+        const err = await createFlightLog(log).catch(testResolve)
+        expect(err).toMatchInlineSnapshot(
+            `[error: insert or update on table "tb_log" violates foreign key constraint "tb_log_aircraft_type_id_fkey"]`
+        )
+    })
+
     it('create a new flight log', async () => {
-        const log: FlightLog = mockFlightLog()
+        const log: DBFlightLog = mockDBFlightLog()
         const newLog = await createFlightLog(log)
         expect(newLog).toMatchObject({
-            ...log,
-            date: new Date('2022-11-21T16:48:23.000Z'), // since UTC time
-            UUID: expect.any(String),
+            id: expect.any(Number)
         })
     })
 })
 
 describe('updateFlightLog', () => {
+    it('should error violates aricraft type foreign key constraint', async () => {
+        const UUID = '7bd69435-7eab-44c8-a4ae-9404df5ce140'
+        const log: DBFlightLog = mockDBFlightLog({
+            uuid: UUID,
+            aircraft_type_id: 127,
+        })
+        const err = await updateFlightLog(log).catch(testResolve)
+        expect(err).toMatchInlineSnapshot(
+            `[error: insert or update on table "tb_log" violates foreign key constraint "tb_log_aircraft_type_id_fkey"]`
+        )
+    })
+
     it('should update a flight log', async () => {
         const UUID = '7bd69435-7eab-44c8-a4ae-9404df5ce140'
-        const log: FlightLog = mockFlightLog({ UUID })
+        const log: DBFlightLog = mockDBFlightLog({ uuid: UUID })
         const newLog = await updateFlightLog(log)
         expect(newLog).toMatchObject({
-            ...log,
-            date: new Date('2022-11-21T16:48:23.000Z'), // since UTC time
-            UUID: UUID,
+            id: expect.any(Number)
         })
     })
 })
 
 describe('deleteFlightLog', () => {
-    it('should return an empty array if the user does not have a flight log', async () => {
+    it('should return false if the user does not have a flight log', async () => {
         const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
         const randomUUID = 'cf3bee16-0a56-40b6-b93f-b30245ce11ec'
 
-        let log = await deleteFlightLog(userUUID, randomUUID)
-        expect(log).toBeNull()
+        let b = await deleteFlightLog(userUUID, randomUUID)
+        expect(b).toBe(false)
     })
     it('should delete a flight log from the database', async () => {
         const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
@@ -155,11 +173,8 @@ describe('deleteFlightLog', () => {
         let logs = await selectFlightLog(userUUID, UUID)
         expect(logs).toHaveLength(1)
 
-        let log = await deleteFlightLog(userUUID, UUID)
-        expect(log).toMatchObject({
-            userUUID: userUUID,
-            UUID: UUID,
-        })
+        let b = await deleteFlightLog(userUUID, UUID)
+        expect(b).toBe(true)
 
         logs = await selectFlightLog(userUUID, UUID)
         expect(logs).toHaveLength(0)

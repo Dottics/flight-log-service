@@ -42,6 +42,7 @@ async function testResolve(e: Error): Promise<Error> {
 const clearData = async () => {
     const pool = new Pool()
     await pool.query('DELETE FROM tb_log WHERE id > 0;')
+    await pool.query('DELETE FROM tb_aircraft_type WHERE id > 0;')
     await pool.end()
 }
 
