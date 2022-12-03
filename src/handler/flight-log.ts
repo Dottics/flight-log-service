@@ -1,6 +1,11 @@
 import { Request, Response } from 'express'
 import { Schema, ValidationError } from 'jsonschema'
-import {createFlightLog, deleteFlightLog, selectFlightLog, updateFlightLog} from '../includes/flight-log'
+import {
+    createFlightLog,
+    deleteFlightLog,
+    selectFlightLog,
+    updateFlightLog
+} from '../includes/flight-log'
 import { v } from '../utils/validator'
 import { map } from '../utils/misc'
 
@@ -114,7 +119,7 @@ const postFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
                 '$ref': '/DateSchema'
             },
-            aircraftType: {
+            aircraftTypeUUID: {
                 type: 'string',
             },
             registration: {
@@ -180,7 +185,7 @@ const postFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
             },
         },
-        required: ['userUUID', 'date', 'aircraftType', 'registration', 'pilotInCommand',
+        required: ['userUUID', 'date', 'aircraftTypeUUID', 'registration', 'pilotInCommand',
         'details', 'instrumentNavAids', 'instrumentPlace', 'instrumentActual',
         'instrumentFSTD', 'instructorSE', 'instructorME', 'instructorFSTD',
         'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
@@ -213,7 +218,7 @@ const putFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
                 '$ref': '/DateSchema'
             },
-            aircraftType: {
+            aircraftTypeUUID: {
                 type: 'string',
             },
             registration: {
@@ -279,7 +284,7 @@ const putFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
             },
         },
-        required: ['userUUID', 'date', 'aircraftType', 'registration', 'pilotInCommand',
+        required: ['userUUID', 'date', 'aircraftTypeUUID', 'registration', 'pilotInCommand',
                    'details', 'instrumentNavAids', 'instrumentPlace', 'instrumentActual',
                    'instrumentFSTD', 'instructorSE', 'instructorME', 'instructorFSTD',
                    'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
@@ -300,7 +305,7 @@ const putFlightLog = async (req: Request, res: Response) => {
 }
 
 /**
-* deleteFlightLog deletes a flight log record
+* delFlightLog deletes a flight log record
 */
 const delFlightLog = async (req: Request, res: Response) => {
     const schema = {
@@ -337,7 +342,6 @@ const delFlightLog = async (req: Request, res: Response) => {
 
     res.status(200).json({
         message: 'flight log deleted',
-        data: { flightLog }
     })
 }
 
