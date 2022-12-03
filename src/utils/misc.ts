@@ -1,5 +1,7 @@
+import {ValidationError} from 'jsonschema'
+
 import { FlightLog, DBSelectFlightLog, DBFlightLog } from '../includes/flight-log'
-import {ValidationError} from "jsonschema";
+import { DBAircraftType, AircraftType } from '../includes/aircraft-type'
 
 /**
 * logError takes an unknown error converts it to an error logs the error with
@@ -19,6 +21,13 @@ const logError = (fnName: string, e: unknown): Error => {
 * one object structure to another.
 */
 const map = {
+    dbToAircraftType: (v: DBAircraftType): AircraftType => {
+        return {
+            UUID: v.uuid,
+            name: v.name,
+            description: v.description,
+        }
+    },
     flightLogToDB: (v: FlightLog) => {
 
     },

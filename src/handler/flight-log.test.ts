@@ -137,7 +137,8 @@ describe('getFlightLogs', () => {
             }
         `)
     })
-    it('should validate the query parameters', async () => {
+
+    it('should return flight log for valid user and UUID parameters', async () => {
         const userUUID = '1ca0ae68-1bf2-4a18-a819-be5aa80ed98e'
         const randomUUID = '2aaff843-d265-4a0e-b0ef-ae08c9d65041'
         mockSelectFlightLog.mockResolvedValueOnce([mockFlightLog()])
@@ -379,6 +380,18 @@ describe('postFlightLog', () => {
             }
         `)
         expect(res.json).toHaveBeenCalledTimes(1)
+    })
+
+    it('should return a 404 not found if an invalid aircraft type', async () => {
+        const testFlightLog = mockFlightLog()
+        mockCreateFlightLog.mockResolvedValueOnce(testFlightLog)
+        const req = buildReq({ body: {
+            ...testFlightLog,
+            date: testFlightLog.date.toISOString()
+        } })
+        const res = buildRes()
+
+        await postFlightLog(req, res)
     })
 
     it('should create a new flight log entry with correct data', async () => {

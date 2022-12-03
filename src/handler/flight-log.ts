@@ -121,6 +121,7 @@ const postFlightLog = async (req: Request, res: Response) => {
             },
             aircraftTypeUUID: {
                 type: 'string',
+                '$ref': '/RegexSchema'
             },
             registration: {
                 type: 'string',
@@ -220,6 +221,7 @@ const putFlightLog = async (req: Request, res: Response) => {
             },
             aircraftTypeUUID: {
                 type: 'string',
+                '$ref': '/RegexSchema'
             },
             registration: {
                 type: 'string',
