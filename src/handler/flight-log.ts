@@ -8,6 +8,7 @@ import {
 } from '../includes/flight-log'
 import { v } from '../utils/validator'
 import { map } from '../utils/misc'
+import { selectAircraftTypeID } from '../includes/aircraft-type'
 
 /**
 * validateData validates the data instance, returns a failed validation body
@@ -197,7 +198,20 @@ const postFlightLog = async (req: Request, res: Response) => {
         res.status(400).json(validationBody)
         return
     }
-    const flightLog = await createFlightLog(req.body)
+
+    // we need to map from aircraft-type-uuid to aircraft-type-id
+    const aircraftTypeID = await selectAircraftTypeID(req.body.aircraftTypeUUID)
+    if (aircraftTypeID === null) {
+        res.status(404).json({
+            message: 'not found',
+            errors: { 'aircraftType': ['not found'] }
+        })
+        return
+    } else {
+        req.body.aircraftTypeID = aircraftTypeID
+    }
+
+    const flightLog = await createFlightLog(map.anyToDBFlightLog(req.body))
     res.status(201).json({
         message: 'flight log saved',
         data: { flightLog },
@@ -298,7 +312,19 @@ const putFlightLog = async (req: Request, res: Response) => {
         return
     }
 
-    const flightLog = await updateFlightLog(req.body)
+    // we need to map from aircraft-type-uuid to aircraft-type-id
+    const aircraftTypeID = await selectAircraftTypeID(req.body.aircraftTypeUUID)
+    if (aircraftTypeID === null) {
+        res.status(404).json({
+            message: 'not found',
+            errors: { 'aircraftType': ['not found'] }
+        })
+        return
+    } else {
+        req.body.aircraftTypeID = aircraftTypeID
+    }
+
+    const flightLog = await updateFlightLog(map.anyToDBFlightLog(req.body))
 
     res.status(200).json({
         message: 'flight log updated',

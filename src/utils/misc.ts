@@ -93,6 +93,34 @@ const map = {
             remarks: v.remarks,
         }
     },
+    anyToDBFlightLog: (v: any): DBFlightLog => {
+        return {
+            uuid: v.UUID,
+            user_uuid: v.userUUID,
+            aircraft_type_id: v.aircraftTypeID,
+            date: v.date,
+            registration: v.registration,
+            pilot_in_command: v.pilotInCommand,
+            details: v.details,
+            instrument_nav_aids: v.instrumentNavAids,
+            instrument_place: v.instrumentPlace,
+            instrument_actual: v.instrumentActual,
+            instrument_fstd: v.instrument_fstd,
+            instructor_se: v.instructorSE,
+            instructor_me: v.instructorME,
+            instructor_fstd: v.instructorFSTD,
+            fstd: v.FSTD,
+            engine_type: v.engineType,
+            day_type: v.dayType,
+            dual: v.dual,
+            pic: v.PIC,
+            picus: v.PICUS,
+            copilot: v.copilot,
+            day_landings: v.dayLandings,
+            night_landings: v.nightLandings,
+            remarks: v.remarks,
+        }
+    },
     /**
     * validationError maps from a validation error to an error that can be
     * returned to the user.
