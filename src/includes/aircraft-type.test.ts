@@ -1,5 +1,5 @@
 import { rePopulateDB } from 'test-utils'
-import { selectAircraftType } from './aircraft-type'
+import {selectAircraftType, selectAircraftTypeID} from './aircraft-type'
 
 beforeAll(async () => {
     await rePopulateDB()
@@ -30,5 +30,19 @@ describe('selectAircraftType', () => {
             name: 'C182',
             description: '',
         })
+    })
+})
+
+describe('selectAircraftTypeID', () => {
+    it('should return null if no aircraft type found by UUID', async () => {
+        const testRandomUUID = '93777fb5-3c45-41cf-8f17-13794200c186'
+        const ID = await selectAircraftTypeID(testRandomUUID)
+        expect(ID).toBeNull()
+    })
+
+    it('should return the id of the aircraft type when found by UUID', async () => {
+        const testUUID = 'fe967f69-2609-4800-aa30-13fb2f3e74dc'
+        const ID = await selectAircraftTypeID(testUUID)
+        expect(ID).toEqual(4)
     })
 })

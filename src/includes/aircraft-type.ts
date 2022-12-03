@@ -29,8 +29,15 @@ const selectAircraftType = async (UUID?: string): Promise<AircraftType[]> => {
     return rows.map((row) => map.dbToAircraftType(row))
 }
 
+const selectAircraftTypeID = async (UUID: string): Promise<number|null> => {
+    const { rows } = await query(`SELECT id FROM tb_aircraft_type WHERE active = TRUE AND uuid = $1 ORDER BY name`, [UUID])
+    if (rows.length === 0) return null
+    return rows[0].id
+}
+
 export {
     AircraftType,
     DBAircraftType,
     selectAircraftType,
+    selectAircraftTypeID,
 }
