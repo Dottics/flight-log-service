@@ -1,13 +1,46 @@
 import { buildReq, buildRes } from 'test-utils'
 import { getFlightLogs, getFlightLog, postFlightLog, putFlightLog, delFlightLog } from './flight-log'
 import * as includesFlightLog from '../includes/flight-log'
+import * as includesAircraftType from '../includes/aircraft-type'
 import { mockFlightLog } from 'generate'
 
 jest.mock('../includes/flight-log')
+jest.mock('../includes/aircraft-type')
 const mockSelectFlightLog = jest.spyOn(includesFlightLog, 'selectFlightLog')
 const mockCreateFlightLog = jest.spyOn(includesFlightLog, 'createFlightLog')
 const mockUpdateFlightLog = jest.spyOn(includesFlightLog, 'updateFlightLog')
 const mockDeleteFlightLog = jest.spyOn(includesFlightLog, 'deleteFlightLog')
+const mockSelectAircraftTypeID = jest.spyOn(includesAircraftType, 'selectAircraftTypeID')
+
+const mockPostPutFlightLogData = (overrides: any = {}) => {
+    return {
+        UUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
+        userUUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
+        date: new Date('2022-11-21T18:48:23.000Z'),
+        aircraftTypeUUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
+        registration: 'ZXYIOU',
+        pilotInCommand: 'SELF',
+        details: 'HKG-CPT',
+        instrumentNavAids: 'ivl',
+        instrumentPlace: 'jvl',
+        instrumentActual: 1,
+        instrumentFSTD: 0,
+        instructorSE: 0,
+        instructorME: 0,
+        instructorFSTD: 0,
+        FSTD: 0,
+        engineType: 'single',
+        dayType: 'day',
+        dual: 0,
+        PIC: 0,
+        PICUS: 0,
+        copilot: 0,
+        dayLandings: 0,
+        nightLandings: 1,
+        remarks: 'weather conditions not ideal',
+        ...overrides,
+    }
+}
 
 // clean up to clear all mocks
 afterAll(() => jest.clearAllMocks())
@@ -383,26 +416,43 @@ describe('postFlightLog', () => {
     })
 
     it('should return a 404 not found if an invalid aircraft type', async () => {
-        const testFlightLog = mockFlightLog()
+        const testFlightLog = mockPostPutFlightLogData()
+
         mockCreateFlightLog.mockResolvedValueOnce(testFlightLog)
+        mockSelectAircraftTypeID.mockResolvedValueOnce(null)
+
         const req = buildReq({ body: {
             ...testFlightLog,
             date: testFlightLog.date.toISOString()
         } })
         const res = buildRes()
 
+        // do exchange
         await postFlightLog(req, res)
+
+        expect(res.status).toHaveBeenCalledWith(404)
+        expect(res.status).toHaveBeenCalledTimes(1)
+
+        expect(res.json).toHaveBeenCalledTimes(1)
+        expect(res.json).toHaveBeenCalledWith({
+            errors: { aircraftType: ["not found"] },
+            message: "not found",
+        })
     })
 
     it('should create a new flight log entry with correct data', async () => {
-        const testFlightLog = mockFlightLog()
-        mockCreateFlightLog.mockResolvedValueOnce(testFlightLog)
+        const testFlightLog = mockPostPutFlightLogData()
+
+        mockCreateFlightLog.mockResolvedValueOnce(mockFlightLog())
+        mockSelectAircraftTypeID.mockResolvedValueOnce(3)
+
         const req = buildReq({ body: {
             ...testFlightLog,
             date: testFlightLog.date.toISOString()
         } })
         const res = buildRes()
 
+        // do exchange
         await postFlightLog(req, res)
 
         expect(res.status).toHaveBeenCalledWith(201)
@@ -643,12 +693,41 @@ describe('putFlightLog', () => {
         expect(res.json).toHaveBeenCalledTimes(1)
     })
 
+    it('should return a 404 not found if an invalid aircraft type', async () => {
+        const testFlightLog = mockPostPutFlightLogData()
+
+        mockSelectAircraftTypeID.mockResolvedValueOnce(null)
+
+        const req = buildReq({ body: {
+            ...testFlightLog,
+            date: testFlightLog.date.toISOString()
+        } })
+        const res = buildRes()
+
+        // do exchange
+        await putFlightLog(req, res)
+
+        expect(res.status).toHaveBeenCalledWith(404)
+        expect(res.status).toHaveBeenCalledTimes(1)
+
+        expect(res.json).toHaveBeenCalledTimes(1)
+        expect(res.json).toHaveBeenCalledWith({
+            errors: { aircraftType: ["not found"] },
+            message: "not found",
+        })
+    })
+
     it('should update the flight log data', async () => {
-        const testFlightLog = mockFlightLog({
+        const testFlightLog = mockPostPutFlightLogData({
             aircraftType: 'F210',
             pilotInCommand: 'J Bond'
         })
-        mockUpdateFlightLog.mockResolvedValueOnce(testFlightLog)
+        const testDBFlightLog = mockFlightLog({
+            aircraftType: 'F210',
+            pilotInCommand: 'J Bond'
+        })
+        mockUpdateFlightLog.mockResolvedValueOnce(testDBFlightLog)
+        mockSelectAircraftTypeID.mockResolvedValueOnce(4)
 
         const req = buildReq({
             body: {
@@ -658,6 +737,7 @@ describe('putFlightLog', () => {
         })
         const res = buildRes()
 
+        // do exchange
         await putFlightLog(req, res)
 
         expect(res.status).toHaveBeenCalledWith(200)
@@ -665,7 +745,7 @@ describe('putFlightLog', () => {
         expect(res.json).toHaveBeenCalledWith({
             message: 'flight log updated',
             data: {
-                flightLog: testFlightLog
+                flightLog: testDBFlightLog
             }
         })
         expect(res.json).toHaveBeenCalledTimes(1)
@@ -677,6 +757,7 @@ describe('deleteFlightLog', () => {
         const req = buildReq()
         const res = buildRes()
 
+        // do exchange
         await delFlightLog(req, res)
 
         expect(res.status).toHaveBeenCalledWith(400)
@@ -742,6 +823,7 @@ describe('deleteFlightLog', () => {
         const req = buildReq({ query: testQueryParams })
         const res = buildRes()
 
+        // do exchange
         await delFlightLog(req, res)
 
         expect(res.status).toHaveBeenCalledWith(404)
