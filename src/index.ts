@@ -10,8 +10,11 @@ import { permissionRequired } from './utils/permission-required'
 import {
     getFlightLogs,
     getFlightLog,
-    postFlightLog
+    postFlightLog,
+    putFlightLog,
+    delFlightLog
 } from './handler/flight-log'
+import { getAircraftTypes } from './handler/aircraft-type'
 
 // load the .env file
 dotenv.config(process.env.NODE_ENV ? { path: '../.env.test' } : undefined)
@@ -42,6 +45,11 @@ app.use(bodyParser.json())
 
 app.get('/', home)
 
+/* AIRCRAFT TYPE */
+
+//a6900fa8-04fb-4de2-9a8a-3c174f3f6315
+app.get('/aircraft-type', permissionRequired('9a8a'), getAircraftTypes)
+
 /* FLIGHT LOG */
 
 //328a0aae-d14a-443a-97f5-480eb4002c87
@@ -51,9 +59,9 @@ app.get('/log/-', permissionRequired('80fe'), getFlightLog)
 //dd7e4b14-d093-4220-b647-d2b30c5222d0
 app.post('/log', permissionRequired('d093'), postFlightLog)
 //cb79ad64-dc91-4aa2-a5e2-1b9d7dc9ccc1
-app.put('/log/-', permissionRequired('ad64'), home)
+app.put('/log/-', permissionRequired('ad64'), putFlightLog)
 //ea35510b-d6b4-43b0-945d-d67772ea23ed
-app.delete('/log/-', permissionRequired('ea23'), home)
+app.delete('/log/-', permissionRequired('ea23'), delFlightLog)
 
 /**
  * Default Error Handler
