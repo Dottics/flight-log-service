@@ -36,8 +36,8 @@ const map = {
     */
     dbToFlightLog: (v: DBFlightLog): FlightLog => {
         return {
-            userUUID: v.user_uuid,
-            UUID: v.uuid,
+            userUuid: v.user_uuid,
+            uuid: v.uuid,
             date: v.date,
             aircraftType: '',
             registration: v.registration,
@@ -50,12 +50,12 @@ const map = {
             instructorSE: parseFloat(v.instructor_se),
             instructorME: parseFloat(v.instructor_me),
             instructorFSTD: parseFloat(v.instructor_fstd),
-            FSTD: parseFloat(v.fstd),
+            fstd: parseFloat(v.fstd),
             engineType: v.engine_type,
             dayType: v.day_type,
             dual: parseFloat(v.dual),
-            PIC: parseFloat(v.pic),
-            PICUS: parseFloat(v.picus),
+            pic: parseFloat(v.pic),
+            picus: parseFloat(v.picus),
             copilot: parseFloat(v.copilot),
             dayLandings: parseFloat(v.day_landings),
             nightLandings: parseFloat(v.night_landings),
@@ -67,8 +67,8 @@ const map = {
     */
     dbSelectToFlightLog: (v: DBSelectFlightLog): FlightLog => {
         return {
-            userUUID: v.user_uuid,
-            UUID: v.uuid,
+            userUuid: v.user_uuid,
+            uuid: v.uuid,
             date: v.date,
             aircraftType: v.aircraft_type,
             registration: v.registration,
@@ -81,12 +81,12 @@ const map = {
             instructorSE: parseFloat(v.instructor_se),
             instructorME: parseFloat(v.instructor_me),
             instructorFSTD: parseFloat(v.instructor_fstd),
-            FSTD: parseFloat(v.fstd),
+            fstd: parseFloat(v.fstd),
             engineType: v.engine_type,
             dayType: v.day_type,
             dual: parseFloat(v.dual),
-            PIC: parseFloat(v.pic),
-            PICUS: parseFloat(v.picus),
+            pic: parseFloat(v.pic),
+            picus: parseFloat(v.picus),
             copilot: parseFloat(v.copilot),
             dayLandings: parseFloat(v.day_landings),
             nightLandings: parseFloat(v.night_landings),

@@ -2,8 +2,8 @@ import { query } from '../database/db'
 import { logError, map } from '../utils/misc'
 
 type FlightLog = {
-    userUUID: string;
-    UUID: string;
+    userUuid: string;
+    uuid: string;
     date: Date;
     aircraftType: string;
     registration: string;
@@ -16,12 +16,12 @@ type FlightLog = {
     instructorSE: number;
     instructorME: number;
     instructorFSTD: number;
-    FSTD: number;
+    fstd: number;
     engineType: 'single' | 'multi';
     dayType: 'day' | 'night';
     dual: number;
-    PIC: number;
-    PICUS: number;
+    pic: number;
+    picus: number;
     copilot: number;
     dayLandings: number;
     nightLandings: number;

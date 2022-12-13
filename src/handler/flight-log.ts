@@ -112,7 +112,7 @@ const postFlightLog = async (req: Request, res: Response) => {
     const schema = {
         type: 'object',
         properties: {
-            userUUID: {
+            userUuid: {
                 type: 'string',
                 '$ref': '/RegexSchema'
             },
@@ -120,7 +120,7 @@ const postFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
                 '$ref': '/DateSchema'
             },
-            aircraftTypeUUID: {
+            aircraftTypeUuid: {
                 type: 'string',
                 '$ref': '/RegexSchema'
             },
@@ -154,7 +154,7 @@ const postFlightLog = async (req: Request, res: Response) => {
             instructorFSTD: {
                 type: 'number',
             },
-            FSTD: {
+            fstd: {
                 type: 'number',
             },
             engineType: {
@@ -168,10 +168,10 @@ const postFlightLog = async (req: Request, res: Response) => {
             dual: {
                 type: 'number',
             },
-            PIC: {
+            pic: {
                 type: 'number',
             },
-            PICUS: {
+            picus: {
                 type: 'number',
             },
             copilot: {
@@ -187,10 +187,10 @@ const postFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
             },
         },
-        required: ['userUUID', 'date', 'aircraftTypeUUID', 'registration', 'pilotInCommand',
+        required: ['userUuid', 'date', 'aircraftTypeUuid', 'registration', 'pilotInCommand',
         'details', 'instrumentNavAids', 'instrumentPlace', 'instrumentActual',
         'instrumentFSTD', 'instructorSE', 'instructorME', 'instructorFSTD',
-        'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
+        'fstd', 'engineType', 'dayType', 'dual', 'pic', 'picus', 'copilot',
         'dayLandings', 'nightLandings', 'remarks'],
     }
     const validationBody = validateData(req.body, schema)
@@ -225,7 +225,11 @@ const putFlightLog = async (req: Request, res: Response) => {
     const schema = {
         type: 'object',
         properties: {
-            userUUID: {
+            uuid: {
+                type: 'string',
+                '$ref': '/RegexSchema'
+            },
+            userUuid: {
                 type: 'string',
                 '$ref': '/RegexSchema'
             },
@@ -233,7 +237,7 @@ const putFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
                 '$ref': '/DateSchema'
             },
-            aircraftTypeUUID: {
+            aircraftTypeUuid: {
                 type: 'string',
                 '$ref': '/RegexSchema'
             },
@@ -281,10 +285,10 @@ const putFlightLog = async (req: Request, res: Response) => {
             dual: {
                 type: 'number',
             },
-            PIC: {
+            pic: {
                 type: 'number',
             },
-            PICUS: {
+            picus: {
                 type: 'number',
             },
             copilot: {
@@ -300,11 +304,11 @@ const putFlightLog = async (req: Request, res: Response) => {
                 type: 'string',
             },
         },
-        required: ['userUUID', 'date', 'aircraftTypeUUID', 'registration', 'pilotInCommand',
-                   'details', 'instrumentNavAids', 'instrumentPlace', 'instrumentActual',
-                   'instrumentFSTD', 'instructorSE', 'instructorME', 'instructorFSTD',
-                   'FSTD', 'engineType', 'dayType', 'dual', 'PIC', 'PICUS', 'copilot',
-                   'dayLandings', 'nightLandings', 'remarks'],
+        required: ['uuid', 'userUuid', 'date', 'aircraftTypeUuid', 'registration',
+                   'pilotInCommand', 'details', 'instrumentNavAids', 'instrumentPlace',
+                   'instrumentActual', 'instrumentFSTD', 'instructorSE', 'instructorME',
+                   'instructorFSTD', 'fstd', 'engineType', 'dayType', 'dual', 'pic',
+                   'picus', 'copilot', 'dayLandings', 'nightLandings', 'remarks'],
     }
     const validationBody = validateData(req.body, schema)
     if (validationBody) {
@@ -313,7 +317,7 @@ const putFlightLog = async (req: Request, res: Response) => {
     }
 
     // we need to map from aircraft-type-uuid to aircraft-type-id
-    const aircraftTypeID = await selectAircraftTypeID(req.body.aircraftTypeUUID)
+    const aircraftTypeID = await selectAircraftTypeID(req.body.aircraftTypeUuid)
     if (aircraftTypeID === null) {
         res.status(404).json({
             message: 'not found',

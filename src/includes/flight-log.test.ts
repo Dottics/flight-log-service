@@ -19,7 +19,7 @@ describe('FlightLog', () => {
     it('should have public properties', () => {
         const f = mockFlightLog()
 
-        expect(f.userUUID).toEqual('54f94bbc-1394-4796-a5a0-7e847afbb813')
+        expect(f.userUuid).toEqual('54f94bbc-1394-4796-a5a0-7e847afbb813')
         expect(f.date.toISOString()).toEqual('2022-11-21T18:48:23.000Z')
         expect(f.aircraftType).toEqual('A310')
         expect(f.registration).toEqual('ZXYIOU')
@@ -45,7 +45,6 @@ describe('selectFlightLog', () => {
         const logs = await selectFlightLog(userUUID)
         expect(logs.length).toBeGreaterThanOrEqual(5)
         expect(logs[0]).toMatchObject({
-//            aircraftType: 'C150',
             copilot: 0,
             date: new Date('2007-02-03T22:00:00.000Z'),
             dayLandings: 0,
@@ -53,7 +52,7 @@ describe('selectFlightLog', () => {
             details: 'Ex4',
             dual: 0,
             engineType: 'single',
-            FSTD: 0,
+            fstd: 0,
             instructorFSTD: 0,
             instructorME: 0,
             instructorSE: 0,
@@ -62,13 +61,13 @@ describe('selectFlightLog', () => {
             instrumentNavAids: '',
             instrumentPlace: '',
             nightLandings: 0,
-            PIC: 0,
-            PICUS: 0,
+            pic: 0,
+            picus: 0,
             pilotInCommand: 'W Jacoby',
             registration: 'ZS-NRX',
             remarks: '',
-            userUUID: userUUID,
-            UUID: expect.any(String),
+            userUuid: userUUID,
+            uuid: expect.any(String),
         })
     })
 
@@ -86,7 +85,7 @@ describe('selectFlightLog', () => {
             details: 'FYWE-FYLZ',
             dual: 0,
             engineType: 'multi',
-            FSTD: 0,
+            fstd: 0,
             instructorFSTD: 0,
             instructorME: 0,
             instructorSE: 0,
@@ -95,13 +94,13 @@ describe('selectFlightLog', () => {
             instrumentNavAids: '',
             instrumentPlace: '',
             nightLandings: 0,
-            PIC: 0,
-            PICUS: 0,
+            pic: 0,
+            picus: 0,
             pilotInCommand: 'C Roets',
             registration: 'V5-WAX',
             remarks: '',
-            userUUID: userUUID,
-            UUID: UUID,
+            userUuid: userUUID,
+            uuid: UUID,
         })
     })
 

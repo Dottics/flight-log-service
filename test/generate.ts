@@ -42,8 +42,8 @@ const mockDBFlightLog = (overrides: Partial<DBFlightLog> = {}): DBFlightLog => {
 
 const mockFlightLog = (overrides: Partial<FlightLog> = {}): FlightLog => {
     return {
-        UUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
-        userUUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
+        uuid: '54f94bbc-1394-4796-a5a0-7e847afbb813',
+        userUuid: '54f94bbc-1394-4796-a5a0-7e847afbb813',
         date: new Date('2022-11-21T18:48:23.000Z'),
         aircraftType: 'A310',
         registration: 'ZXYIOU',
@@ -56,12 +56,12 @@ const mockFlightLog = (overrides: Partial<FlightLog> = {}): FlightLog => {
         instructorSE: 0,
         instructorME: 0,
         instructorFSTD: 0,
-        FSTD: 0,
+        fstd: 0,
         engineType: 'single',
         dayType: 'day',
         dual: 0,
-        PIC: 0,
-        PICUS: 0,
+        pic: 0,
+        picus: 0,
         copilot: 0,
         dayLandings: 0,
         nightLandings: 1,
