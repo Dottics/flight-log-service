@@ -26,7 +26,7 @@ describe('selectAircraftType', () => {
         const rows = await selectAircraftType(UUID)
         expect(rows).toHaveLength(1)
         expect(rows[0]).toMatchObject({
-            UUID,
+            uuid: UUID,
             name: 'C182',
             description: '',
         })

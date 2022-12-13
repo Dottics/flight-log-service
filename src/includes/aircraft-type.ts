@@ -3,7 +3,7 @@ import { query } from '../database/db'
 import { map } from '../utils/misc'
 
 type AircraftType = {
-    UUID: string;
+    uuid: string;
     name: string;
     description: string;
 }

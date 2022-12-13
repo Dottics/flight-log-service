@@ -3,7 +3,7 @@ import { AircraftType } from 'includes/aircraft-type'
 
 const mockAircraftType = (overrides: Partial<AircraftType> = {}): AircraftType => {
     return {
-        UUID: '54f94bbc-1394-4796-a5a0-7e847afbb813',
+        uuid: '54f94bbc-1394-4796-a5a0-7e847afbb813',
         name: 'A380',
         description: 'a plane with code 380',
         ...overrides,

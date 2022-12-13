@@ -23,7 +23,7 @@ const logError = (fnName: string, e: unknown): Error => {
 const map = {
     dbToAircraftType: (v: DBAircraftType): AircraftType => {
         return {
-            UUID: v.uuid,
+            uuid: v.uuid,
             name: v.name,
             description: v.description,
         }
