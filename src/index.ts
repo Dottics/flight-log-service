@@ -32,7 +32,7 @@ const checkDBConnections = async () => {
 checkDBConnections().then(() => {})
 
 const app: Express = express()
-const PORT = 3000
+const PORT = process.env.PORT ?? 3000
 
 // enable to allow express to trust the x-forwarded-for header set by nginx
 // and allows us to directly access the request ip field.

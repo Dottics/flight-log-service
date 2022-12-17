@@ -1,0 +1,14 @@
+FROM node
+# Run commands from /app directory inside container
+WORKDIR /src
+# Copy requirements from local to docker image
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+# Install the dependencies in the docker image
+RUN npm install
+# Copy everything from the current dir to the image
+COPY . .
+# build
+RUN npm run build
+# start up the server
+CMD ["npm", "run", "dev"]
