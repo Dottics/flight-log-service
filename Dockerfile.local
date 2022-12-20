@@ -8,6 +8,7 @@ COPY package-lock.json package-lock.json
 RUN npm install
 # Copy everything from the current dir to the image
 COPY . .
+COPY .env.local .env
 # build
 RUN npm run build
 # start up the server

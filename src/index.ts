@@ -2,6 +2,9 @@ import express, { Express } from 'express'
 import bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 
+// load the .env file
+dotenv.config(process.env.NODE_ENV ? { path: '../.env.test' } : undefined)
+
 import { pool } from './database/db'
 import { redis } from './database/redisDB'
 import { home } from './handler/home'
@@ -15,9 +18,6 @@ import {
     delFlightLog
 } from './handler/flight-log'
 import { getAircraftTypes } from './handler/aircraft-type'
-
-// load the .env file
-dotenv.config(process.env.NODE_ENV ? { path: '../.env.test' } : undefined)
 
 /**
 * checkDBConnections is a function called on start of the application to ensure
