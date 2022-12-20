@@ -23,8 +23,6 @@ const permissionRequired = (permissionCode: string) =>
     async (req: Request, res: Response, next: NextFunction) => {
         console.log(`=> ${permissionCode}:${req.url}`)
         const token = (req.get('x-user-token') ?? '') as string
-        console.log(process.env.JWT_CODE)
-        console.log(process.env.JWT_ALGORITHM)
         try {
             const code = process.env.JWT_CODE ?? ''
             const algorithm = (process.env.JWT_ALGORITHM ?? 'HS256') as Algorithm
